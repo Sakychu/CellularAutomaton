@@ -18,9 +18,7 @@ namespace CelluarAutomaton
 {
 	class Rendering : GameState
 	{
-		//private List<FractelChunkMultiThread> fcList = new List<FractelChunkMultiThread>() ~ DeleteContainerAndItems!(_);
 		private CelluarAutomatonObj automaton = null ~ SafeDelete!(_);
-		//private FractelChunk fc = null ~ SafeDelete!(_);
 		private uint64 money = 1000000;
 		bool mLiveUpdate = false;
 
@@ -34,8 +32,6 @@ namespace CelluarAutomaton
 
 		public this()
 		{
-			//automaton = new CelluarAutomatonObj(new .(gGameApp.mScreen.w, gGameApp.mScreen.h));
-
 			gGameApp.mCam.mScale = 4.4f;
 			gGameApp.mCam.[Friend]_resetScale = gGameApp.mCam.mScale;
 
@@ -48,46 +44,9 @@ namespace CelluarAutomaton
 			automaton = new CelluarAutomatonObj(new .(512, 512));
 
 			GenLevel();
-			for (var i in 0 ..< 1)
-			{
-				/*var cell = new Cell(0, 255, 0);
-				//cell.SetGridPos(gGameApp.mRand.Next(0,gGameApp.mScreen.w),gGameApp.mRand.Next(0,gGameApp.mScreen.h));
-				cell.SetBrain(new Tree());
-				automaton.AddCellAt(cell, .(gGameApp.mScreen.w / 4, gGameApp.mScreen.h / 4));
-				automaton.CopyCellTo(cell, .(gGameApp.mScreen.w / 2, gGameApp.mScreen.h / 4));
-				automaton.CopyCellTo(cell, .(gGameApp.mScreen.w / 4, gGameApp.mScreen.h / 2));
-				automaton.CopyCellTo(cell, .(gGameApp.mScreen.w / 2, gGameApp.mScreen.h / 2));*/
-			}
-
-			/*for (var x in 0 ... 255)
-			{
-				for (var y in 0 ... 255)
-				{
-					if (x % 4 == 0 && y % 4 == 0)
-					{
-						var cell = new Cell(0, 255, 0);
-						cell.SetGridPos(x, y);
-						automaton.lCells.Add(cell);
-					}
-				}
-			}*/
-			/*fc.[Friend]xMax = 1;
-			fc.[Friend]yMax = 1;
-			fc.[Friend]xMin = -1;
-			fc.[Friend]yMin = -1;*/
-
-			/*fc.[Friend]xMax = gGameApp.mScreen.w;//1;
-			fc.[Friend]yMax = gGameApp.mScreen.h;
-			fc.[Friend]xMin = 0;
-			fc.[Friend]yMin = 0;*/
-			//fc = new FractelChunk(new .(gGameApp.mScreen.w * 2, gGameApp.mScreen.h * 2), -2, 2, -2, 2, 2, 400);
 
 			var label = new DataLabel<int64>(&(automaton.[Friend]lastRenderingTime), 4, 4 + (28 * (0 + 1)));
 			timerLabels.Add(label);
-			/*
-			timerLabels.Add(new DataLabel<int64>(&fc.LastRenderingTimes[1], 4, 4 + (28 * 1)));
-			timerLabels.Add(new DataLabel<int64>(&fc.LastRenderingTimes[3], 4, 4 + (28 * 2)));
-			timerLabels.Add(new DataLabel<int64>(&fc.LastRenderingTimes[5], 4, 4 + (28 * 3)));*/
 
 			label.AutoUpdate = false;
 			label.UpdateString(0, true);
@@ -103,12 +62,7 @@ namespace CelluarAutomaton
 			automaton.RenderImage();
 			let buff = new String();
 			CellFactory.IDtoString(toPlaceType, buff);
-			toPlaceCellLabel.SetString(buff); /*for (var fc in fc)
-			{
-				Logger.Debug(StackStringFormat!("{} / {}", (++cnt), fc.Count));
-				fc.PreperRenderImages();
-			}*/
-			//RenderAsVideo();
+			toPlaceCellLabel.SetString(buff);
 		}
 
 		public ~this()
@@ -122,19 +76,7 @@ namespace CelluarAutomaton
 		public char8* lastError;
 		public override void Draw(int dt)
 		{
-			//base.Draw(dt);
-
-			/*SDL.SetRenderDrawColor(gEngineApp.mRenderer, 127, 127, 78, 255);
-			SDL.RenderFillRect(gGameApp.mRenderer, &gGameApp.mScreen.clip_rect);
-			SDL.SetRenderDrawColor(gEngineApp.mRenderer, 0, 0, 0, 255);*/
-
 			automaton.Draw();
-			/*for (var i in ..<timerLabels.Count)
-			{
-				var label = timerLabels[i];
-				label.Draw(dt);
-				//if (label.[Friend]mLastStringValue != fc.LastRenderingTimes[i])
-			}*/
 
 			for (var label in timerLabels)
 			{
@@ -156,7 +98,6 @@ namespace CelluarAutomaton
 		public override void Update(int dt)
 		{
 			base.Update(dt);
-			//statusLabel.UpdateString(automaton.lCells.Count, true);
 			for (var i in ..<timerLabels.Count)
 			{
 				var label = timerLabels[i];
@@ -180,9 +121,7 @@ namespace CelluarAutomaton
 		}
 
 		Vector2D lastMousePos = new Vector2D(0, 0) ~ SafeDelete!(_);
-		//v2d<float> lastClickUpdated = v2d<float>(0, 0);
-		CellTypes toPlaceType = .Sand;
-		//bool holdingMouseDown = false;
+		CellTypes toPlaceType = .Bomb;
 		public override void MouseDown(SDL2.SDL.MouseButtonEvent evt)
 		{
 			base.MouseDown(evt);
@@ -287,31 +226,20 @@ namespace CelluarAutomaton
 
 			if (--delay > 0)
 				return;
-			/*Vector2D pos1 = scope .(x1,y1);
-			Vector2D pos2 = scope .(x2,y2);
-			var dirLen = ray.mDir.Length();
-			var deltaX = ray.mDir.x / dirLen * stepSize;
-			var deltaY = ray.mDir.y / dirLen * stepSize;*/
 
 			var delta = 0.5f;
 			if (gGameApp.IsKeyDown(.LShift))
 				delta = 5;
 			if (gGameApp.IsKeyDown(.KpMinus))
 			{
-				/*for (var fc in fc)
-				{*/
 				automaton.[Friend]zoomScale = automaton.[Friend]zoomScale / 1.25f; //Math.Max(fc.[Friend]zoomScale / 1.25f, 1);
 				Logger.Info("zoom", automaton.[Friend]zoomScale);
-				//}
 				delay = 20;
 			}
 			else if (gGameApp.IsKeyDown(.KpPlus))
 			{
-				/*for (var fc in fc)
-				{*/
 				automaton.[Friend]zoomScale *= 1.25f;
 				Logger.Info("zoom", automaton.[Friend]zoomScale);
-				//}
 				delay = 20;
 			}
 
@@ -330,30 +258,15 @@ namespace CelluarAutomaton
 
 			if (gGameApp.IsKeyDown(.K))
 			{
-				/*for (var fc in fc)
-				{*/
-				/*fc.[Friend]yOffset -= (delta * 0.5) / fc.[Friend]zoomScale;
-				Logger.Info("y", fc.[Friend]yOffset);*/
-				//}
 				delay = 20;
 			}
 			else if (gGameApp.IsKeyDown(.I))
 			{
-				/*for (var fc in fc)
-				{*/
-				/*fc.[Friend]yOffset += (delta * 0.5) / fc.[Friend]zoomScale;
-				Logger.Info("y", fc.[Friend]yOffset);*/
-				//}
 				delay = 20;
 			}
 
 			if (gGameApp.IsKeyDown(.J))
 			{
-				/*for (var fc in fc)
-				{*/
-				/*fc.[Friend]xOffset -= (delta * 0.5) / fc.[Friend]zoomScale;
-				Logger.Info("x", fc.[Friend]xOffset);*/
-				//}
 				repeat
 				{
 					toPlaceType = (CellTypes)((uint16)toPlaceType + 1);
@@ -364,16 +277,10 @@ namespace CelluarAutomaton
 				let buff = new String();
 				CellFactory.IDtoString(toPlaceType, buff);
 				toPlaceCellLabel.SetString(buff);
-				//toPlaceCellLabel.UpdateString((int)toPlaceType, true);
 				delay = 10;
 			}
 			else if (gGameApp.IsKeyDown(.L))
 			{
-				/*for (var fc in fc)
-				{*/
-				/*fc.[Friend]xOffset += (delta * 0.5) / fc.[Friend]zoomScale;
-				Logger.Info("x", fc.[Friend]xOffset);*/
-				//}
 				repeat
 				{
 					if (((uint16)toPlaceType) == 0)
@@ -386,62 +293,40 @@ namespace CelluarAutomaton
 				CellFactory.IDtoString(toPlaceType, buff);
 				toPlaceCellLabel.SetString(buff);
 
-
-				//toPlaceCellLabel.UpdateString((int)toPlaceType, true);
-
 				delay = 10;
 			}
 
 			if (gGameApp.IsKeyDown(.N)) // Reset
 			{
-				/*for (var fc in fc)
-				{*/
-				/*fc.[Friend]xOffset = 0;
-				fc.[Friend]yOffset = 0;
-				fc.[Friend]zoomScale = 1;
-				Logger.Info("reset", fc.[Friend]xOffset);*/
-				//}
 				delay = 20;
 			}
 
 			if (gGameApp.IsKeyDown(.Q))
 			{
-				/*for (var fc in fc)
-				{*/
-				//fc.[Friend]xyPixelStep = Math.Max(fc.[Friend]xyPixelStep - 1, 1);
 				gGameApp.mCam.mScale = Math.Max(gGameApp.mCam.mScale - 0.1f, 1);
 				Logger.Info("zoom", gGameApp.mCam.mScale);
-				//}
 				delay = 1;
 			}
 			else if (gGameApp.IsKeyDown(.E))
 			{
-				//for (var fc in fc)
-				//{
-				//fc.[Friend]xyPixelStep++;
 				gGameApp.mCam.mScale += 0.1f;
 				Logger.Info("zoom", gGameApp.mCam.mScale);
-				//}
 				delay = 1;
 			}
 
 
 			if (gGameApp.IsKeyDown(.U))
 			{
-				/*for (var fc in fc)
-				{*/
+				
 				automaton.[Friend]xyPixelStep = Math.Max(automaton.[Friend]xyPixelStep - 1, 1);
 				Logger.Info("xyPixelStep", automaton.[Friend]xyPixelStep);
-				//}
 				delay = 20;
 			}
 			else if (gGameApp.IsKeyDown(.O))
 			{
-				//for (var fc in fc)
-				//{
+				
 				automaton.[Friend]xyPixelStep++;
 				Logger.Info("xyPixelStep", automaton.[Friend]xyPixelStep);
-				//}
 				delay = 20;
 			}
 
@@ -463,52 +348,8 @@ namespace CelluarAutomaton
 				gGameApp.mCam.mPos.mX += delta;
 			}
 
-
-			/*if (gGameApp.IsKeyDown(.Kp1))
-			{
-				fc.mThreadEnabled[0] = !fc.mThreadEnabled[0];
-				delay = 21;
-			} else if (gGameApp.IsKeyDown(.Kp2))
-			{
-				fc.mThreadEnabled[1] = !fc.mThreadEnabled[1];
-				delay = 21;
-			} else if (gGameApp.IsKeyDown(.Kp3))
-			{
-				fc.mThreadEnabled[2] = !fc.mThreadEnabled[2];
-				delay = 21;
-			} else if (gGameApp.IsKeyDown(.Kp4))
-			{
-				fc.mThreadEnabled[3] = !fc.mThreadEnabled[3];
-				delay = 21;
-			} else if (gGameApp.IsKeyDown(.Kp5))
-			{
-				fc.mThreadEnabled[4] = !fc.mThreadEnabled[4];
-				delay = 21;
-			} else if (gGameApp.IsKeyDown(.Kp6))
-			{
-				fc.mThreadEnabled[5] = !fc.mThreadEnabled[5];
-				delay = 21;
-			} else if (gGameApp.IsKeyDown(.Kp7))
-			{
-				fc.mThreadEnabled[6] = !fc.mThreadEnabled[6];
-				delay = 21;
-			} else if (gGameApp.IsKeyDown(.Kp8))
-			{
-				fc.mThreadEnabled[7] = !fc.mThreadEnabled[7];
-				delay = 21;
-			} else if (gGameApp.IsKeyDown(.Kp9))
-			{
-				//fc.mThreadEnabled[8] = !fc.mThreadEnabled[8];
-				delay = 21;
-			}*/
-
 			if (gGameApp.IsKeyDown(.R))
 			{
-				/*for (var fc in fc)
-				{*/
-				/*automaton.Update();
-				automaton.RenderImage();*/
-				//}
 				GenLevel();
 				delay = 20;
 			}
