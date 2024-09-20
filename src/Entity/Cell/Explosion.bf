@@ -30,6 +30,7 @@ namespace CelluarAutomaton.Entity.Cell
 			if(mTurnTo != .None)
 			{
 				Cell c = CellFactory.NewFromId(mTurnTo);
+				c.mTmp = mTmp;
 				playfield.AddCellAt(c, mPos);
 			}
 			else

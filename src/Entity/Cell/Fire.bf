@@ -22,7 +22,7 @@ namespace CelluarAutomaton.Entity.Cell
 
 		public override void Think(CelluarAutomatonObj playfield)
 		{
-			var dimAmount = gGameApp.mRand.Next(0,20)-10*2;
+			var dimAmount = (gGameApp.mRand.Next(0,20)-10)*2;
 			if(((int)mColor.r + dimAmount) > 256)
 				mColor.r = 255;
 			else
@@ -42,6 +42,8 @@ namespace CelluarAutomaton.Entity.Cell
 							if (tPos.x >= 0 && tPos.y >= 0 && tPos.x < playfield.GridSize.Width && tPos.y < playfield.GridSize.Height)
 							{
 								var neighborCell = playfield.GetCellAt(tPos);
+								if(neighborCell != null)
+									neighborCell.mTmp += 1f;
 								if(neighborCell is Tree || neighborCell is Vine)
 								{
 									Cell c = new Fire(tPos);

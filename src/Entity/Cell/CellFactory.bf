@@ -39,6 +39,8 @@ static class CellFactory
 			return new Grenade(pos);
 		case .Ore:
 			return new Ore(pos);
+		case .Gravel:
+			return new Gravel(pos);
 		default:
 			return new Sand(pos);
 		}
@@ -64,6 +66,8 @@ static class CellFactory
 			return false;
 		case .Vine:
 			return true;
+		case .Gravel:
+			return false;
 		default:
 			return false;
 		}
@@ -99,7 +103,9 @@ static class CellFactory
 			strBuffer.Append("Bomb");
 		case .Grenade:
 			strBuffer.Append("Grenade");
-			default:
+		case .Gravel:
+			strBuffer.Append("Gravel");
+		default:
 			strBuffer.Append("err");
 		}
 	}

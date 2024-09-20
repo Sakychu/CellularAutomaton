@@ -177,101 +177,6 @@ namespace CelluarAutomaton
 			automaton.RenderImage();
 
 			moneyLabel.UpdateString(money, true);
-
-			/*if (holdingMouseDown)
-			{
-				/*uint32 button = UpdateMousePos();
-				bool LButton = button == SDL.BUTTON_LMASK;
-				bool RButton = button == SDL.BUTTON_RMASK;
-
-				/*int32 x1 = (int32)lastMousePos.mX;
-				int32 x2 = (int32)lastClickUpdated.x;
-				int32 y1 = (int32)lastMousePos.mY;
-				int32 y2 = (int32)lastClickUpdated.y;
-
-				Vector2D pos1 = scope .(x1,y1);
-				Vector2D pos2 = scope .(x2,y2);*/
-				/*var dirLen = ray.mDir.Length();
-				var deltaX = ray.mDir.x / dirLen * stepSize;
-				var deltaY = ray.mDir.y / dirLen * stepSize;*/
-				/*double deltaX = pos1.mX / pos2.mX * 0.5;
-				double deltaY = pos1.mY / pos2.mY * 0.5;*/
-				/*double deltaX = (pos2.mX - pos1.mX);
-				double deltaY = (pos2.mY - pos1.mY);*/
-				double y = lastMousePos.mY;
-				double x = lastMousePos.mX;
-				v2d<int> tPos = .((int)x, (int)y);
-				var tCell = automaton.GetCellAt(tPos);
-				if (tCell != null)
-				{
-					if (RButton)
-					{
-						if (tCell.mRemovalcost > 0 && money >= tCell.mRemovalcost) //tCell.ID != .Shop
-						{
-							automaton.ClearCell(tPos);
-							money -= tCell.mRemovalcost;
-						}
-					}
-					else if (LButton)
-					{
-					}
-				} else
-				{
-					if (RButton)
-					{
-					}
-					else if (LButton)
-					{
-						Cell c = CellFactory.NewFromId(toPlaceType);
-						if (money >= c.mPlacecost)
-						{
-							automaton.AddCellAt(c, tPos);
-							money -= c.mPlacecost;
-						}
-						else
-							delete c;
-					}
-				}*/
-				/*for (int x = x1; x <= x2; x++)
-				{
-					for (int y = y1; y <= y2; y++)
-					{
-						v2d<int> tPos = .((int)x, (int)y);
-						var tCell = automaton.GetCellAt(tPos);
-						if (tCell != null)
-						{
-							if (RButton)
-							{
-								if (tCell.mRemovalcost > 0 && money >= tCell.mRemovalcost) //tCell.ID != .Shop
-								{
-									automaton.ClearCell(tPos);
-									money -= tCell.mRemovalcost;
-								}
-							}
-							else if (LButton)
-							{
-							}
-						} else
-						{
-							if (RButton)
-							{
-							}
-							else if (LButton)
-							{
-								Cell c = CellFactory.NewFromId(toPlaceType);
-								if (money >= c.mPlacecost)
-								{
-									automaton.AddCellAt(c, tPos);
-									money -= c.mPlacecost;
-								}
-								else
-									delete c;
-							}
-						}
-					}
-				}*/
-				lastClickUpdated.Set(lastMousePos.mX, lastMousePos.mY);
-			}*/
 		}
 
 		Vector2D lastMousePos = new Vector2D(0, 0) ~ SafeDelete!(_);
@@ -601,10 +506,11 @@ namespace CelluarAutomaton
 			{
 				/*for (var fc in fc)
 				{*/
-				automaton.Update();
-				automaton.RenderImage();
+				/*automaton.Update();
+				automaton.RenderImage();*/
 				//}
-				delay = 5;
+				GenLevel();
+				delay = 20;
 			}
 			if (gGameApp.IsKeyDown(.B))
 			{
@@ -658,6 +564,11 @@ namespace CelluarAutomaton
 					if ((y < 30 && y > 15) && x > (halfPos.x))
 						continue;
 					Cell cell = new Stone(pos);
+					if(gGameApp.mRand.GetChance(0.1) && gGameApp.mRand.GetChance(0.1))
+					{
+						delete cell;
+						cell = new Ore(pos);
+					}
 					automaton.AddCellAt(cell, pos);
 				}
 			}

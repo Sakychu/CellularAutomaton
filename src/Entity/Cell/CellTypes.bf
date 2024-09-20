@@ -15,6 +15,7 @@ namespace CelluarAutomaton.Entity.Cell
 		Unobstonium,
 		Bomb,
 		Grenade,
-		Ore
+		Ore,
+		Gravel
 	}
 }

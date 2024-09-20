@@ -73,6 +73,9 @@ namespace CelluarAutomaton.Entity
 
 					Cell c = (*cell);
 					c.mLifeCycle++;
+					if(c.mTmp > 0){
+						c.mTmp-=0.25f;
+					}
 					if (c.mSleepTimer > 0)
 						c.mSleepTimer--;
 					if (c.mLifeCycle >= c.mNextUpdate && c.mSleepTimer == 0)
@@ -135,6 +138,9 @@ namespace CelluarAutomaton.Entity
 								}
 								else
 								{
+									if(cellGrid[offsetPos.y, offsetPos.x] != null)
+										cellGrid[offsetPos.y, offsetPos.x].mSleepTimer = 0;
+
 									if (tempVel.x != 0)
 									{
 										if (tempVel.x > 0)

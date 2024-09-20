@@ -11,7 +11,7 @@ namespace CelluarAutomaton.Entity.Cell
 		public this(v2d<int> pos) : base(pos, .(255, 32, 32, 255))
 		{
 			mSleepTimer = gGameApp.mRand.Next(0, 2);
-			mPlacecost = 0;
+			mPlacecost = 100;
 			mRemovable = true;
 			mHasGravity = false;
 		}
@@ -37,49 +37,20 @@ namespace CelluarAutomaton.Entity.Cell
 				for (var i = 0; i < (360); i += (360 / 90))
 				{
 					bool hitNonBreakable = false;
-					for (var r = 0; r < radi; r++)
+					for (float r = 0; r <= radi; r+=1f)
 					{
 						var x1 = r * Math.Cos(i * Math.PI_d / 180);
 						var y1 = r * Math.Sin(i * Math.PI_d / 180);
 						tPos.Set((int)(mPos.x + x1), (int)(mPos.y + y1));
-					/*}
-				}
 
-				for (var yOffSet = -radi; yOffSet <= radi; yOffSet++)
-				{
-					for (var xOffSet = -radi; xOffSet <= radi; xOffSet++)
-					{
-						var actualRadi = Math.Sqrt(Math.Abs(xOffSet*xOffSet)+Math.Abs(yOffSet*yOffSet));
-						if(radi < actualRadi)
-							continue;
-
-						tPos.Set(mPos.x + xOffSet, mPos.y + yOffSet);*/
 						if (tPos.x >= 0 && tPos.y >= 0 && tPos.x < playfield.GridSize.Width && tPos.y < playfield.GridSize.Height)
 						{
 							Explosion c = null;
 
 							var neighborCell = playfield.GetCellAt(tPos);
-							if (neighborCell is Stone)
-							{
-								c = new Explosion(mPos, .Sand);
-								/*if (gGameApp.mRand.GetChance(0.8))
-									c = new Explosion(mPos, .Sand);
-								else
-									c = new Explosion(mPos, .Ore);*/
-							}
-							else if (neighborCell is Vine)
-							{
-								c = new Explosion(mPos, .Fire);
-							}
-							else if (neighborCell is Fire)
-							{
-								c = new Explosion(mPos);
-							}
-							else if (neighborCell is Sand)
-							{
-								c = new Explosion(mPos, .Sand);
-							}
-							else if (let neighborBomb = neighborCell as Bomb)
+							if(neighborCell != null)
+								neighborCell.mTmp += Math.Remap(r, 0, radi, 15f, 0f);
+							if (let neighborBomb = neighborCell as Bomb)
 							{
 								if (!neighborBomb.[System.Friend]shouldExplode)
 								{
@@ -90,14 +61,16 @@ namespace CelluarAutomaton.Entity.Cell
 							else if (let neighborExplosion = neighborCell as Explosion)
 							{
 								neighborExplosion.mSleepTimer += 2;
-								neighborExplosion.mSleepTimer = Math.Min(neighborExplosion.mSleepTimer, 24);
+								if(neighborExplosion.mSleepTimer > 128)
+									neighborExplosion.mSleepTimer -= 12;
 							}
-							else if(neighborCell != null)
+
+							if (neighborCell is ConveyorBase || neighborCell is Unobstonium || neighborCell is Shop)
 							{
 								hitNonBreakable = true;
 							}
 
-							if (c == null && neighborCell == null)
+							if (c == null && neighborCell == null && !hitNonBreakable)
 							{
 								c = new Explosion(mPos);
 							}

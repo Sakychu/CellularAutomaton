@@ -16,6 +16,8 @@ namespace CelluarAutomaton.Entity.Cell
 		public v2d<int> mPos;
 		public SDL2.SDL.Color mColor;
 		public CellBrain mBrain = null ~ SafeDelete!(_);
+		public float mTmp = 0f;
+		public float mMaxTmp = 0f;
 
 		public bool mMarkDelete = false;
 
@@ -151,7 +153,7 @@ namespace CelluarAutomaton.Entity.Cell
 				int randomNumber = gGameApp.mRand.Next(0, 100);
 				bool rightEmpty = ((offsetPos.x + 1 < playfield.GridSize.Width) && playfield.GetCellAt(GetOffSet(1, 1)) == null);
 				bool leftEmpty = ((offsetPos.x - 1 > 0) && playfield.GetCellAt(GetOffSet(-1, 1)) == null);
-				if (randomNumber < 50)
+				if (randomNumber < 45)
 				{
 					if (leftEmpty)
 					{
@@ -173,6 +175,13 @@ namespace CelluarAutomaton.Entity.Cell
 						mVel.Set(-1, 0); //MoveToOffset(-1, 0, playfield);
 					}
 				}
+
+				playfield.GetCellAt(offsetPos).mSleepTimer = 0;
+
+				if(!leftEmpty)
+					playfield.GetCellAt(GetOffSet(-1, 1)).mSleepTimer =0;
+				if(!rightEmpty)
+					playfield.GetCellAt(GetOffSet(1, 1)).mSleepTimer =0;
 			} 
 		}
 
@@ -182,8 +191,8 @@ namespace CelluarAutomaton.Entity.Cell
 			ID.ToString(buffer);
 			buffer.Append(", Rc: ");
 			mRemovalcost.ToString(buffer);
-			buffer.Append(", Rem: ");
-			mRemovable.ToString(buffer);
+			buffer.Append(", Tmp: ");
+			mTmp.ToString(buffer);
 			buffer.Append(", Pc: ");
 			mPlacecost.ToString(buffer);
 			buffer.Append(", LC: ");
