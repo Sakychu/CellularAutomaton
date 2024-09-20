@@ -1,0 +1,89 @@
+using BasicEngine;
+using System.Collections;
+using Plotter.Entity.Cell;
+using Plotter.Entity.Cell.Brains;
+using BasicEngine.Collections;
+
+namespace Plotter.Entity
+{
+	class CelluarAutomaton : RawPixelDrawable
+	{
+		public List<Cell> lCells = new List<Cell>() ~ DeleteContainerAndItems!(_);
+
+		public this(Size2D size) : base(size)
+		{
+		}
+
+		public Cell FindCellAt(v2d<int> pos)
+		{
+			for (var cell in lCells)
+			{
+				if (cell.mPos == pos)
+					return cell;
+			}
+			return null;
+		}
+
+		public void Update()
+		{
+			List<CellIntent> updates = scope List<CellIntent>();
+			for (var cell in lCells)
+			{
+				var thought = cell.Think();
+				if (thought != null)
+				{
+					var t = thought.Value;
+					t.SetOriginCell(cell);
+					t.SetTargetCell(FindCellAt(t.TargetPos));
+					updates.Add(t);
+				}
+			}
+
+			for (var update in updates)
+			{
+				switch (update.Intent)
+				{
+				case .Move:
+					MoveCellTo(update);
+					break;
+
+				case .Spread:
+					CopyCellTo(update);
+					break;
+				default:
+					break;
+				}
+			}
+		}
+
+		private void MoveCellTo(CellIntent update)
+		{
+			if (update.TargetCell == null)
+				(update.OriginCell).SetGridPos(update.TargetPos);
+		}
+
+		private void CopyCellTo(CellIntent update)
+		{
+			if (update.TargetCell == null)
+			{
+				var cell = new Cell(update.OriginCell);
+				cell.SetGridPos(update.TargetPos);
+				lCells.Add(cell);
+			}
+		}
+
+		public override void RenderLoop(int32 pixelStep, SDL2.Image image, uint32* data)
+		{
+			//base.RenderLoop(pixelStep, image, data);
+			var halfPixelStep = pixelStep/2;
+			for (var cell in lCells)
+			{
+				var xPos = cell.mPos.x-halfPixelStep;
+				var yPos = cell.mPos.y-halfPixelStep;
+				if (xPos < 0 || yPos < 0)
+					continue;
+				SetCell(xPos, yPos, pixelStep, image, data, cell.mColor);
+			}
+		}
+	}
+}
